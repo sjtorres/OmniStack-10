@@ -1,6 +1,19 @@
 const { Router } = require('express');
+const axios = require('axios');
 
 const routes = Router();
+
+routes.post('/devs', async (request, response) => {
+  const { github_username } = request.body;
+  const apiResponse = await axios.get(`https://api.github.com/users/${github_username}`);
+  const { name = login, avatar_url, bio } = apiResponse.data;
+
+  console.log(name, avatar_url, bio, github_username);
+
+  return(response.json({ message: 'Sandro Torres' }))
+})
+
+module.exports = routes;
 
 
 // "Metodos HTTP" - GET, POST, PUT, DELETE
@@ -8,21 +21,5 @@ const routes = Router();
 
 // Tipos de Parâmetros em Express:
 // Query Params: request.query (Filtros, ordenação, paginação, ...)
-routes.get('/', (request, response) => {
-  console.log(request.query)
-  return response.json({ menssage: 'Filtros, Ordenação, Paginação, ...' })
-})
-
 // Route Params: request.params (Identificar parametros na alteração ou remoção)
-routes.delete('/users/:id', (request, response) => {
-  console.log(request.params);
-  return response.json({ message: 'Identificar parametros na alteração ou remoção' });
-});
-
 // Body: request.body (Dados para criação ou alteração de um registro)
-routes.post('/users/', (request, response) => {
-  console.log(request.body)
-  return(response.json({ message: 'Criação ou alteração de um registro' }))
-})
-
-module.exports = routes;
